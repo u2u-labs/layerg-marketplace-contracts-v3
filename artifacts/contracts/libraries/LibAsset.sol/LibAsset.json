@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "LibAsset",
+  "sourceName": "contracts/libraries/LibAsset.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212201db4489ae4d0d92bd52ad660ea26aef9515f5335b20eff07a1185f99618ae3ed64736f6c634300081c0033",
+  "deployedBytecode": "0x600080fdfea26469706673582212201db4489ae4d0d92bd52ad660ea26aef9515f5335b20eff07a1185f99618ae3ed64736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
