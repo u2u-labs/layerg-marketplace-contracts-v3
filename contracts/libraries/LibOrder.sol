@@ -81,7 +81,7 @@ library LibOrder {
         bytes32 orderHash,
         bytes memory signature
     ) internal pure returns (address) {
-        return orderHash.toEthSignedMessageHash().recover(signature);
+        return ECDSA.recover(orderHash, signature);
     }
 
     function isOrderExpired(
