@@ -1,0 +1,222 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "./interfaces/IAuctionVault.sol";
+
+contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
+    using SafeERC20 for IERC20;
+
+    address public operator;
+    uint256 public emergencyWithdrawalDelay = 30 days;
+
+    struct Deposit {
+        address bidder;
+        address token; // address(0) for native
+        uint256 amount;
+        bool refunded;
+        uint256 depositTime;
+    }
+
+    mapping(address => mapping(bytes32 => Deposit)) public deposits; // userAddress => (auctionHash => Deposit)
+
+    event Deposited(
+        bytes32 indexed auctionHash,
+        address indexed bidder,
+        uint256 amount,
+        address token
+    );
+    event Refunded(
+        bytes32 indexed auctionHash,
+        address indexed bidder,
+        uint256 amount,
+        address token
+    );
+    event Finalized(
+        bytes32 indexed auctionHash,
+        address indexed seller,
+        uint256 amount,
+        address token
+    );
+    event operatorUpdated(address oldoperator, address newoperator);
+    event EmergencyWithdrawal(
+        bytes32 indexed auctionHash,
+        address indexed bidder,
+        uint256 amount,
+        address token
+    );
+
+    modifier onlyOperator() {
+        require(msg.sender == operator, "Not operator");
+        _;
+    }
+
+    constructor(address _operator) {
+        require(_operator != address(0), "Invalid operator");
+        operator = _operator;
+    }
+
+    function setOperator(address _operator) external onlyOwner {
+        require(_operator != address(0), "Invalid address");
+        address oldoperator = operator;
+        operator = _operator;
+        emit operatorUpdated(oldoperator, _operator);
+    }
+
+    function setEmergencyWithdrawalDelay(uint256 _delay) external onlyOwner {
+        emergencyWithdrawalDelay = _delay;
+    }
+
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    function unpause() external onlyOwner {
+        _unpause();
+    }
+
+    function hasDeposit(
+        address bidder,
+        bytes32 auctionHash
+    ) external view returns (bool) {
+        return
+            deposits[bidder][auctionHash].amount > 0 &&
+            !deposits[bidder][auctionHash].refunded;
+    }
+
+    function getDeposit(
+        address bidder,
+        bytes32 auctionHash
+    )
+        external
+        view
+        returns (
+            address _bidder,
+            address _token,
+            uint256 _amount,
+            bool _refunded,
+            uint256 _depositTime
+        )
+    {
+        Deposit storage dep = deposits[bidder][auctionHash];
+        return (
+            dep.bidder,
+            dep.token,
+            dep.amount,
+            dep.refunded,
+            dep.depositTime
+        );
+    }
+
+    // Called by operator when a user places a bid
+    function deposit(
+        bytes32 auctionHash,
+        address bidder,
+        address token,
+        uint256 amount
+    ) external payable onlyOperator nonReentrant whenNotPaused {
+        require(bidder != address(0), "Invalid bidder");
+        require(amount > 0, "Zero amount");
+        require(deposits[bidder][auctionHash].amount == 0, "Deposit exists");
+
+        if (token == address(0)) {
+            require(msg.value == amount, "Incorrect msg.value");
+        } else {
+            IERC20(token).safeTransferFrom(bidder, address(this), amount);
+        }
+
+        deposits[bidder][auctionHash] = Deposit({
+            bidder: bidder,
+            token: token,
+            amount: amount,
+            refunded: false,
+            depositTime: block.timestamp
+        });
+
+        emit Deposited(auctionHash, bidder, amount, token);
+    }
+
+    // Refund bidder if auction was lost/cancelled
+    function refund(
+        bytes32 auctionHash,
+        address bidder
+    ) external onlyOperator nonReentrant {
+        Deposit storage dep = deposits[bidder][auctionHash];
+        require(dep.amount > 0, "No deposit found");
+        require(!dep.refunded, "Already refunded");
+
+        dep.refunded = true;
+
+        uint256 refundAmount = dep.amount;
+        address refundToken = dep.token;
+
+        // Then perform the transfer
+        if (refundToken == address(0)) {
+            payable(dep.bidder).transfer(refundAmount);
+        } else {
+            IERC20(refundToken).safeTransfer(dep.bidder, refundAmount);
+        }
+
+        emit Refunded(auctionHash, dep.bidder, refundAmount, refundToken);
+    }
+
+    // Transfer winning bid amount to seller
+    function finalize(
+        bytes32 auctionHash,
+        address seller,
+        address bidder
+    ) external onlyOperator nonReentrant {
+        Deposit storage dep = deposits[bidder][auctionHash];
+        require(dep.amount > 0, "No deposit found");
+        require(!dep.refunded, "Already refunded");
+
+        dep.refunded = true;
+
+        uint256 sellerAmount = dep.amount;
+        address token = dep.token;
+
+        // Perform transfers
+        if (token == address(0)) {
+            payable(seller).transfer(sellerAmount);
+        } else {
+            IERC20 tokenContract = IERC20(token);
+            tokenContract.safeTransfer(seller, sellerAmount);
+        }
+
+        emit Finalized(auctionHash, seller, sellerAmount, token);
+    }
+
+    // Emergency withdrawal if operator is compromised or non-functional
+    function emergencyWithdraw(bytes32 auctionHash) external nonReentrant {
+        Deposit storage dep = deposits[msg.sender][auctionHash];
+        require(dep.amount > 0, "No deposit found");
+        require(!dep.refunded, "Already refunded");
+        require(
+            block.timestamp > dep.depositTime + emergencyWithdrawalDelay,
+            "Withdrawal delay not met"
+        );
+
+        dep.refunded = true;
+
+        uint256 withdrawAmount = dep.amount;
+        address token = dep.token;
+
+        // Perform the transfer
+        if (token == address(0)) {
+            payable(msg.sender).transfer(withdrawAmount);
+        } else {
+            IERC20(token).safeTransfer(msg.sender, withdrawAmount);
+        }
+
+        emit EmergencyWithdrawal(
+            auctionHash,
+            msg.sender,
+            withdrawAmount,
+            token
+        );
+    }
+}
