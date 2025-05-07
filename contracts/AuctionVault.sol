@@ -8,12 +8,16 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/IAuctionVault.sol";
 
+/**
+ * @title AuctionVault
+ * @notice Auction's vault contract for users to deposit funds for auction participation
+ * @dev Handles deposits, refunds (ERC20, native token)
+ */
 contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
     using SafeERC20 for IERC20;
 
-    address public operator;
+    address public operator; // address of the operator (in this case the marketplace)
     uint256 public emergencyWithdrawalDelay = 30 days;
-
     struct Deposit {
         address bidder;
         address token; // address(0) for native
@@ -24,6 +28,7 @@ contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
 
     mapping(address => mapping(bytes32 => Deposit)) public deposits; // userAddress => (auctionHash => Deposit)
 
+    // Events
     event Deposited(
         bytes32 indexed auctionHash,
         address indexed bidder,
@@ -50,6 +55,7 @@ contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
         address token
     );
 
+    // Modifiers
     modifier onlyOperator() {
         require(msg.sender == operator, "Not operator");
         _;
@@ -112,7 +118,12 @@ contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
         );
     }
 
-    // Called by operator when a user places a bid
+    /**
+     * @notice Deposit funds for auction participation (called by operator)
+     * @param auctionHash Hash of auction
+     * @param token Token's address to deposit (address(0) for native)
+     * @param amount Token's amount to deposit
+     */
     function deposit(
         bytes32 auctionHash,
         address bidder,
@@ -140,7 +151,11 @@ contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
         emit Deposited(auctionHash, bidder, amount, token);
     }
 
-    // Refund bidder if auction was lost/cancelled
+    /**
+     * @notice Refunds a deposit for a bidder in an auction (called by operator)
+     * @param auctionHash Hash of auction
+     * @param bidder Bidder's address
+     */
     function refund(
         bytes32 auctionHash,
         address bidder
@@ -164,7 +179,12 @@ contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
         emit Refunded(auctionHash, dep.bidder, refundAmount, refundToken);
     }
 
-    // Transfer winning bid amount to seller
+    /**
+     * @notice Finalizes a deposit for a bidder in an auction (transfer bidder's deposit to seller, called by operator)
+     * @param auctionHash Hash of auction
+     * @param seller Seller's address
+     * @param bidder Bidder's address
+     */
     function finalize(
         bytes32 auctionHash,
         address seller,
@@ -190,7 +210,10 @@ contract AuctionVault is Ownable, ReentrancyGuard, Pausable, IAuctionVault {
         emit Finalized(auctionHash, seller, sellerAmount, token);
     }
 
-    // Emergency withdrawal if operator is compromised or non-functional
+    /**
+     * @notice Emergency withdraw for a bidder in an auction (called by bidder)
+     * @param auctionHash Hash of auction
+     */
     function emergencyWithdraw(bytes32 auctionHash) external nonReentrant {
         Deposit storage dep = deposits[msg.sender][auctionHash];
         require(dep.amount > 0, "No deposit found");
