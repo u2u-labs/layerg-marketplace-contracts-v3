@@ -33,7 +33,6 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
         address indexed winner,
         uint256 amount
     );
-
     event CancelOrder(bytes32 indexed orderHash);
     event OrderMatched(
         bytes32 indexed orderHash,
@@ -47,9 +46,15 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
         address _assetTransferAgent,
         uint256 _feeBps
     ) Validator("LayerGMarketPlace", "1") {
+        require(_feeRecipient != address(0), "Invalid fee recipient");
+        require(
+            _assetTransferAgent != address(0),
+            "Invalid asset transfer agent"
+        );
+        require(_feeBps <= MAX_FEE_BPS, "Invalid fee BPS");
+
         feeRecipient = _feeRecipient;
         assetTransferAgent = _assetTransferAgent;
-        require(_feeBps >= 0 && _feeBps <= MAX_FEE_BPS, "Invalid fee BPS");
         feeBps = _feeBps;
     }
 
@@ -80,7 +85,7 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
     }
 
     function setFeeBps(uint256 _feeBps) external onlyOwner {
-        require(_feeBps >= 0 && _feeBps <= MAX_FEE_BPS, "Invalid fee BPS");
+        require(_feeBps <= MAX_FEE_BPS, "Invalid fee BPS");
         feeBps = _feeBps;
     }
 
@@ -114,6 +119,7 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
             orderItemIndex
         ];
         LibOrder.OrderItem calldata takerOrderItem = takerOrder.items[0];
+
         _validate(makerOrder, takerOrder, orderItemIndex);
         if (makerOrder.orderType == LibOrder.OrderType.BULK) {
             validateBulkOrderItem(makerOrderItem, makerOrder.root, proof);
@@ -208,7 +214,6 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
                 fillAmount
             );
 
-            // Accumulate native payment
             if (takeAsset.assetType == LibAsset.AssetType.NATIVE) {
                 totalNativeAmount += takeAsset.assetAmount;
             }
@@ -219,7 +224,6 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
             emit OrderMatched(makerOrderHash, maker, taker, fillAmount);
         }
 
-        // Check that enough ETH was sent
         if (totalNativeAmount > 0) {
             require(
                 msg.value >= totalNativeAmount,
@@ -278,23 +282,23 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
         LibAuction.Auction calldata auction
     ) external payable nonReentrant {
         bytes32 auctionHash = LibAuction.hash(auction);
+
         require(
             block.timestamp >= auction.startTime &&
                 block.timestamp < auction.endTime,
             "Auction not active"
         );
+        require(!_isFinalized(auctionHash), "Auction already finalized");
         validateAuctionSigner(auction);
         require(msg.value >= auction.startPrice, "Bid below start price");
 
         LibAuction.Bid storage current = highestBids[auctionHash];
         require(msg.value > current.amount, "Bid not higher than current");
 
-        // Refund previous highest
         if (current.amount > 0) {
             payable(current.bidder).transfer(current.amount);
         }
 
-        // Store new highest
         highestBids[auctionHash] = LibAuction.Bid({
             bidder: msg.sender,
             amount: msg.value,
@@ -303,7 +307,6 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
 
         emit AuctionBidSubmitted(auctionHash, msg.sender, msg.value);
 
-        // If bid >= buyNowPrice, finalize immediately
         if (auction.buyNowPrice > 0 && msg.value >= auction.buyNowPrice) {
             _finalizeAuction(auction, auctionHash);
         }
@@ -329,11 +332,10 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
         bytes32 auctionHash
     ) internal {
         auctionFinalized[auctionHash] = true;
-        LibAuction.Bid memory winningBid = highestBids[auctionHash];
 
+        LibAuction.Bid memory winningBid = highestBids[auctionHash];
         require(winningBid.amount > 0, "No bids placed");
 
-        // Transfer NFT
         if (auction.asset.assetType == LibAsset.AssetType.ERC721) {
             IAssetTransferAgent(assetTransferAgent).transferERC721(
                 auction.asset.contractAddress,
@@ -354,7 +356,6 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
             revert("Unsupported asset type");
         }
 
-        // Transfer funds to seller
         payable(auction.maker).transfer(winningBid.amount);
 
         emit AuctionFinalized(
@@ -398,9 +399,11 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
     ) internal {
         require(feeRecipient != address(0), "Fee recipient not set");
         require(assetTransferAgent != address(0), "Transfer agent not set");
+
+        uint256 feeAmount = (asset.assetAmount * feeBps) / 10000;
+        uint256 amountAfterFee = asset.assetAmount - feeAmount;
+
         if (asset.assetType == LibAsset.AssetType.NATIVE) {
-            uint256 feeAmount = (asset.assetAmount * feeBps) / 10000;
-            uint256 amountAfterFee = asset.assetAmount - feeAmount;
             require(msg.value >= asset.assetAmount, "Insufficient msg.value");
             if (feeAmount > 0) {
                 (bool feeSent, ) = feeRecipient.call{value: feeAmount}("");
@@ -409,8 +412,6 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
             (bool sent, ) = to.call{value: amountAfterFee}("");
             require(sent, "Native transfer failed");
         } else if (asset.assetType == LibAsset.AssetType.ERC20) {
-            uint256 feeAmount = (asset.assetAmount * feeBps) / 10000;
-            uint256 amountAfterFee = asset.assetAmount - feeAmount;
             if (feeAmount > 0) {
                 IAssetTransferAgent(assetTransferAgent).transferERC20(
                     asset.contractAddress,
@@ -454,18 +455,14 @@ contract Marketplace is ReentrancyGuard, Ownable, Validator {
         validateOrderSigner(makerOrder);
         validateIfMatchedBothSide(makerOrder, takerOrder, orderItemIndex);
         require(msg.sender == takerOrder.maker, "Sender is not taker");
-
-        // Validate if orders are fully filled
         require(
             !isOrderFullyFilled(makerOrder, orderItemIndex),
             "Maker order filled"
         );
-        // Validate if orders are cancelled
         require(
             !isOrderCancelled(makerOrder, orderItemIndex),
             "Maker order cancelled"
         );
-        // Validate if orders are expired
         require(
             !LibOrder.isOrderExpired(makerOrder, orderItemIndex),
             "Maker order expired"
