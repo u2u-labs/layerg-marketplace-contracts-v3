@@ -7,9 +7,10 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./libraries/LibOrder.sol";
 import "./libraries/LibAsset.sol";
+import "./libraries/LibAuction.sol";
 import "./libraries/MerkleProof.sol";
 
-abstract contract OrderValidator is EIP712 {
+abstract contract Validator is EIP712 {
     using ECDSA for bytes32;
 
     bytes4 internal constant MAGICVALUE = 0x1626ba7e;
@@ -82,5 +83,33 @@ abstract contract OrderValidator is EIP712 {
             makerOrderItem.makeAsset,
             takerOrderItem.takeAsset
         );
+    }
+
+    function hashAuction(
+        LibAuction.Auction calldata auction
+    ) internal view returns (bytes32) {
+        bytes32 hash = _hashTypedDataV4(LibAuction.hash(auction));
+        return hash;
+    }
+
+    function validateAuctionSigner(
+        LibAuction.Auction calldata auction
+    ) internal view {
+        address maker = auction.maker;
+        bytes32 auctionHash = hashAuction(auction);
+        bytes calldata signature = auction.signature;
+        if (maker.code.length > 0) {
+            require(
+                IERC1271(maker).isValidSignature(auctionHash, signature) ==
+                    MAGICVALUE,
+                "contract auction signature verification error"
+            );
+        } else {
+            address signer = LibAuction.recoverSigner(auctionHash, signature);
+            require(
+                maker == signer,
+                "Invalid signature. Maker is not the signer"
+            );
+        }
     }
 }

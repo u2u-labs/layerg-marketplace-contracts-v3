@@ -3,12 +3,16 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./libraries/LibOrder.sol";
 import "./libraries/LibAsset.sol";
+import "./libraries/LibAuction.sol";
 import "./interfaces/IAssetTransferAgent.sol";
-import "./OrderValidator.sol";
+import "./Validator.sol";
 
-contract Marketplace is ReentrancyGuard, Ownable, OrderValidator {
+contract Marketplace is ReentrancyGuard, Ownable, Validator {
+    using ECDSA for bytes32;
+
     uint256 public constant MAX_FEE_BPS = 10000;
     address public feeRecipient;
     address public assetTransferAgent;
@@ -16,6 +20,19 @@ contract Marketplace is ReentrancyGuard, Ownable, OrderValidator {
 
     mapping(bytes32 => mapping(uint256 => uint256)) public orderFillAmount;
     mapping(bytes32 => mapping(uint256 => bool)) private cancelledOrders;
+    mapping(bytes32 => LibAuction.Bid) public highestBids;
+    mapping(bytes32 => bool) public auctionFinalized;
+
+    event AuctionBidSubmitted(
+        bytes32 indexed auctionHash,
+        address indexed bidder,
+        uint256 amount
+    );
+    event AuctionFinalized(
+        bytes32 indexed auctionHash,
+        address indexed winner,
+        uint256 amount
+    );
 
     event CancelOrder(bytes32 indexed orderHash);
     event OrderMatched(
@@ -29,7 +46,7 @@ contract Marketplace is ReentrancyGuard, Ownable, OrderValidator {
         address _feeRecipient,
         address _assetTransferAgent,
         uint256 _feeBps
-    ) OrderValidator("LayerGMarketPlace", "1") {
+    ) Validator("LayerGMarketPlace", "1") {
         feeRecipient = _feeRecipient;
         assetTransferAgent = _assetTransferAgent;
         require(_feeBps >= 0 && _feeBps <= MAX_FEE_BPS, "Invalid fee BPS");
@@ -255,6 +272,109 @@ contract Marketplace is ReentrancyGuard, Ownable, OrderValidator {
         _transferWithFee(seller, bidder, takeAsset);
 
         emit OrderMatched(orderHash, bidder, seller, sellAmount);
+    }
+
+    function submitAuctionBid(
+        LibAuction.Auction calldata auction
+    ) external payable nonReentrant {
+        bytes32 auctionHash = LibAuction.hash(auction);
+        require(
+            block.timestamp >= auction.startTime &&
+                block.timestamp < auction.endTime,
+            "Auction not active"
+        );
+        validateAuctionSigner(auction);
+        require(msg.value >= auction.startPrice, "Bid below start price");
+
+        LibAuction.Bid storage current = highestBids[auctionHash];
+        require(msg.value > current.amount, "Bid not higher than current");
+
+        // Refund previous highest
+        if (current.amount > 0) {
+            payable(current.bidder).transfer(current.amount);
+        }
+
+        // Store new highest
+        highestBids[auctionHash] = LibAuction.Bid({
+            bidder: msg.sender,
+            amount: msg.value,
+            timestamp: block.timestamp
+        });
+
+        emit AuctionBidSubmitted(auctionHash, msg.sender, msg.value);
+
+        // If bid >= buyNowPrice, finalize immediately
+        if (auction.buyNowPrice > 0 && msg.value >= auction.buyNowPrice) {
+            _finalizeAuction(auction, auctionHash);
+        }
+    }
+
+    function finalizeAuction(
+        LibAuction.Auction calldata auction,
+        bytes calldata signature
+    ) external nonReentrant {
+        bytes32 auctionHash = hashAuction(auction);
+        require(!_isFinalized(auctionHash), "Already finalized");
+        require(block.timestamp >= auction.endTime, "Auction not ended");
+        require(
+            _verifyAuctionSignature(auction, signature),
+            "Invalid signature"
+        );
+
+        _finalizeAuction(auction, auctionHash);
+    }
+
+    function _finalizeAuction(
+        LibAuction.Auction memory auction,
+        bytes32 auctionHash
+    ) internal {
+        auctionFinalized[auctionHash] = true;
+        LibAuction.Bid memory winningBid = highestBids[auctionHash];
+
+        require(winningBid.amount > 0, "No bids placed");
+
+        // Transfer NFT
+        if (auction.asset.assetType == LibAsset.AssetType.ERC721) {
+            IAssetTransferAgent(assetTransferAgent).transferERC721(
+                auction.asset.contractAddress,
+                auction.maker,
+                winningBid.bidder,
+                auction.asset.assetId
+            );
+        } else if (auction.asset.assetType == LibAsset.AssetType.ERC1155) {
+            IAssetTransferAgent(assetTransferAgent).transferERC1155(
+                auction.asset.contractAddress,
+                auction.maker,
+                winningBid.bidder,
+                auction.asset.assetId,
+                auction.asset.assetAmount,
+                ""
+            );
+        } else {
+            revert("Unsupported asset type");
+        }
+
+        // Transfer funds to seller
+        payable(auction.maker).transfer(winningBid.amount);
+
+        emit AuctionFinalized(
+            auctionHash,
+            winningBid.bidder,
+            winningBid.amount
+        );
+    }
+
+    function _isFinalized(bytes32 auctionHash) internal view returns (bool) {
+        return auctionFinalized[auctionHash];
+    }
+
+    function _verifyAuctionSignature(
+        LibAuction.Auction calldata auction,
+        bytes memory signature
+    ) internal view returns (bool) {
+        bytes32 digest = hashAuction(auction);
+        address signer = digest.recover(signature);
+        return signer == auction.maker;
     }
 
     function _fillOrder(
