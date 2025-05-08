@@ -44,7 +44,7 @@ The contract is built with security in mind, implementing reentrancy guards, pau
 - Buy-now price support
 - Automatic finalization when buy-now price is met
 
-#### Collection Bidding
+#### Collection Bidding (only support ERC721 collection)
 - Bid on any item within an NFT collection
 - Set maximum quantity for collection bids
 - Time-bound bid validity
