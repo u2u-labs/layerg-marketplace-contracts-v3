@@ -28,7 +28,7 @@ The contract is built with security in mind, implementing reentrancy guards, pau
 - ERC721 (Non-Fungible Tokens)
 - ERC1155 (Multi Tokens)
 - ERC20 (Fungible Tokens)
-- Native cryptocurrency (ETH)
+- Native cryptocurrency
 
 ### Trading Mechanisms
 
