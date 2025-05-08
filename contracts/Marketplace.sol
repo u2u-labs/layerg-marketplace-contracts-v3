@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -11,6 +12,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "./libraries/LibOrder.sol";
 import "./libraries/LibAsset.sol";
 import "./libraries/LibAuction.sol";
+import "./libraries/LibCollectionBid.sol";
 import "./interfaces/IAssetTransferAgent.sol";
 import "./Validator.sol";
 import "./interfaces/IAuctionVault.sol";
@@ -42,6 +44,9 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
     // Auction tracking
     mapping(bytes32 => LibAuction.Bid) public highestBids;
     mapping(bytes32 => bool) public auctionFinalized;
+
+    // Collection bid tracking
+    mapping(bytes32 => uint256) public collectionBidFillAmount;
 
     // Events
     event AuctionBidSubmitted(
@@ -440,6 +445,65 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
     }
 
     /**
+     * @notice Accept a collection bid order (only support ERC721 collection)
+     * @param bid bid order to accept
+     * @param tokenId tokenId to accept (token id of the NFT, NFT should be in the same collection as the bid)
+     */
+    function acceptCollectionBid(
+        LibCollectionBid.CollectionBid calldata bid,
+        uint256 tokenId
+    ) external nonReentrant {
+        LibAsset.Asset calldata makeAssetPerItem = bid.makeAssetPerItem;
+        address bidder = bid.bidder;
+        address collectionAddress = bid.collectionAddress;
+        bytes calldata signature = bid.signature;
+
+        require(_isERC721(collectionAddress), "Bid collection is not ERC721");
+        require(!LibCollectionBid.isExpired(bid), "Bid expired");
+        require(bid.bidder == msg.sender, "Sender is not the bidder");
+
+        bytes32 collectionBidHash = hashCollectionBid(bid);
+
+        // Check fulfillment cap
+        require(
+            collectionBidFillAmount[collectionBidHash] + 1 <= bid.maxQuantity,
+            "Bid max quantity exceeded"
+        );
+
+        // Verify bid signature
+        address signer = LibCollectionBid.recoverSigner(
+            collectionBidHash,
+            signature
+        );
+        require(signer == bid.bidder, "Invalid signature");
+
+        // Update fulfilled quantity
+        collectionBidFillAmount[collectionBidHash]++;
+
+        // Calculate total price
+        uint256 totalPrice = makeAssetPerItem.assetAmount;
+
+        // Transfer token from bidder to msg.sender, nft from msg.sender to bidder
+        LibAsset.Asset memory makeAsset = LibAsset.Asset({
+            assetType: LibAsset.AssetType.ERC721,
+            contractAddress: bid.collectionAddress,
+            assetId: tokenId,
+            assetAmount: 1
+        });
+        LibAsset.Asset memory takeAsset = LibAsset.Asset({
+            assetType: makeAssetPerItem.assetType,
+            contractAddress: makeAssetPerItem.contractAddress,
+            assetId: makeAssetPerItem.assetId,
+            assetAmount: totalPrice
+        });
+
+        _transferWithFee(bidder, msg.sender, takeAsset);
+        _transferWithFee(msg.sender, bidder, makeAsset);
+
+        emit OrderMatched(collectionBidHash, bidder, msg.sender, totalPrice);
+    }
+
+    /**
      * @notice Submits a bid for an auction
      * @param auction The auction to bid on
      */
@@ -753,7 +817,7 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
             "Maker order cancelled"
         );
         require(
-            !LibOrder.isOrderExpired(makerOrder, orderItemIndex),
+            !LibOrder.isExpired(makerOrder, orderItemIndex),
             "Maker order expired"
         );
     }
@@ -796,6 +860,34 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
             );
         } else {
             revert("Unsupported asset type");
+        }
+    }
+
+    /**
+     * @notice Verifies that an collection is ERC721 or not
+     * @param collection The address of the collection
+     */
+    function _isERC721(address collection) internal view returns (bool) {
+        try
+            IERC165(collection).supportsInterface(type(IERC721).interfaceId)
+        returns (bool result) {
+            return result;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * @notice Verifies that an collection is ERC1155 or not
+     * @param collection The address of the collection
+     */
+    function _isERC1155(address collection) internal view returns (bool) {
+        try
+            IERC165(collection).supportsInterface(type(IERC1155).interfaceId)
+        returns (bool result) {
+            return result;
+        } catch {
+            return false;
         }
     }
 

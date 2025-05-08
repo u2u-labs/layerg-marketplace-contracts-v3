@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./libraries/LibOrder.sol";
 import "./libraries/LibAsset.sol";
 import "./libraries/LibAuction.sol";
+import "./libraries/LibCollectionBid.sol";
 import "./libraries/MerkleProof.sol";
 
 abstract contract Validator is EIP712 {
@@ -27,23 +28,18 @@ abstract contract Validator is EIP712 {
         return hash;
     }
 
-    function validateOrderSigner(LibOrder.Order calldata order) internal view {
-        address maker = order.maker;
-        bytes32 orderHash = hashOrder(order);
-        bytes calldata signature = order.signature;
-        if (maker.code.length > 0) {
-            require(
-                IERC1271(maker).isValidSignature(orderHash, signature) ==
-                    MAGICVALUE,
-                "contract order signature verification error"
-            );
-        } else {
-            address signer = LibOrder.recoverSigner(orderHash, signature);
-            require(
-                maker == signer,
-                "Invalid signature. Maker is not the signer"
-            );
-        }
+    function hashAuction(
+        LibAuction.Auction calldata auction
+    ) internal view returns (bytes32) {
+        bytes32 hash = _hashTypedDataV4(LibAuction.hash(auction));
+        return hash;
+    }
+
+    function hashCollectionBid(
+        LibCollectionBid.CollectionBid calldata bid
+    ) internal view returns (bytes32) {
+        bytes32 hash = _hashTypedDataV4(LibCollectionBid.hash(bid));
+        return hash;
     }
 
     function validateBulkOrderItem(
@@ -85,11 +81,23 @@ abstract contract Validator is EIP712 {
         );
     }
 
-    function hashAuction(
-        LibAuction.Auction calldata auction
-    ) internal view returns (bytes32) {
-        bytes32 hash = _hashTypedDataV4(LibAuction.hash(auction));
-        return hash;
+    function validateOrderSigner(LibOrder.Order calldata order) internal view {
+        address maker = order.maker;
+        bytes32 orderHash = hashOrder(order);
+        bytes calldata signature = order.signature;
+        if (maker.code.length > 0) {
+            require(
+                IERC1271(maker).isValidSignature(orderHash, signature) ==
+                    MAGICVALUE,
+                "contract order signature verification error"
+            );
+        } else {
+            address signer = LibOrder.recoverSigner(orderHash, signature);
+            require(
+                maker == signer,
+                "Invalid signature. Maker is not the signer"
+            );
+        }
     }
 
     function validateAuctionSigner(
@@ -108,6 +116,32 @@ abstract contract Validator is EIP712 {
             address signer = LibAuction.recoverSigner(auctionHash, signature);
             require(
                 maker == signer,
+                "Invalid signature. Maker is not the signer"
+            );
+        }
+    }
+
+    function validateCollectionBidSigner(
+        LibCollectionBid.CollectionBid calldata bid
+    ) internal view {
+        address bidder = bid.bidder;
+        bytes32 collectionBidHash = hashCollectionBid(bid);
+        bytes calldata signature = bid.signature;
+        if (bidder.code.length > 0) {
+            require(
+                IERC1271(bidder).isValidSignature(
+                    collectionBidHash,
+                    signature
+                ) == MAGICVALUE,
+                "contract collection bid signature verification error"
+            );
+        } else {
+            address signer = LibAuction.recoverSigner(
+                collectionBidHash,
+                signature
+            );
+            require(
+                bidder == signer,
                 "Invalid signature. Maker is not the signer"
             );
         }

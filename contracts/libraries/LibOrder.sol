@@ -40,6 +40,12 @@ library LibOrder {
         bytes signature;
     }
 
+    struct CollectionBid {
+        address collection;
+        uint256 pricePerItem;
+        uint256 maxQuantity;
+    }
+
     function hashOrderItem(
         OrderItem calldata item
     ) internal pure returns (bytes32) {
@@ -84,7 +90,7 @@ library LibOrder {
         return ECDSA.recover(orderHash, signature);
     }
 
-    function isOrderExpired(
+    function isExpired(
         Order memory order,
         uint256 orderItemIndex
     ) internal view returns (bool) {
