@@ -25,9 +25,9 @@ The contract is built with security in mind, implementing reentrancy guards, pau
 ## Features
 
 ### Asset Support
-- ERC721 (Non-Fungible Tokens)
-- ERC1155 (Multi Tokens)
-- ERC20 (Fungible Tokens)
+- ERC721
+- ERC1155
+- ERC20
 - Native cryptocurrency
 
 ### Trading Mechanisms
