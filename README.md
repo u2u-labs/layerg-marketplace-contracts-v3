@@ -282,3 +282,65 @@ market.setAssetTransferAgent(address(agent));
 market.setAuctionVault(address(vault));
 market.setFeeBps(250); // 2.5%
 ```
+
+---
+
+## 🔁 Bulk Order Support
+
+### 🧩 `batchMatchOrders` Flow
+
+Used to match multiple maker orders against a single taker order in one transaction.
+
+1. Taker submits:
+   - Array of `makerOrders`
+   - Single `takerOrder`
+   - `orderItemIndices`: indices of each item being matched in respective makerOrders
+   - `proofs`: Merkle proofs (if maker order type is BULK)
+
+2. For each order:
+   - `validateOrderSigner()` checks signature
+   - `validateIfMatchedBothSide()` checks asset compatibility
+   - If type == `OrderType.BULK`, `validateBulkOrderItem()` verifies Merkle proof
+   - Transfers assets using `_transferWithFee()`
+
+✅ Saves gas by batching many order fills into a single transaction.
+
+---
+
+### 🌳 `validateBulkOrderItem` Flow
+
+Used to validate a bulk order’s Merkle-leaf encoded item.
+
+1. Each maker order of type `BULK` contains:
+   - `root` (Merkle root of all item hashes)
+   - Off-chain signature for root
+
+2. Each `OrderItem` being executed must:
+   - Provide its Merkle proof in the `proofs[]` array
+   - Be verifiable via `validateBulkOrderItem()`:
+     ```solidity
+     function validateBulkOrderItem(
+         OrderItem calldata orderItem,
+         bytes32 root,
+         bytes32[] calldata proof
+     ) internal pure {
+         bytes32 leaf = hashOrderItem(orderItem);
+         require(verifyMerkleProof(proof, root, leaf), "Invalid Merkle proof");
+     }
+     ```
+
+🔐 This reduces gas usage by keeping large listings off-chain and only verifying necessary items on-chain.
+
+---
+
+## ✅ Example Bulk Order Flow
+
+1. Seller signs `OrderType.BULK` with `root = keccak256([...orderItemHashes])`
+2. Buyer submits:
+   - `batchMatchOrders(...)`
+   - Includes only the items they want to match
+   - Includes valid proof for each item
+3. Contract:
+   - Validates each item exists in the tree
+   - Executes transfers
+
