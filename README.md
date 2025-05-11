@@ -1,18 +1,24 @@
 
+
 # 📘 LayerG Marketplace - Full Smart Contract Documentation
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Contract Structure](#contract-structure)
-- [Core Contracts](#core-contracts)
-- [Library Modules](#library-modules)
-- [Example Flows](#example-flows)
-- [Security Considerations](#security-considerations)
-- [Tech Stack](#tech-stack)
-- [License](#license)
+- [🧬 Overview](#-overview)
+- [📁 Contract Structure](#-contract-structure)
+- [⚙️ Core Contracts](#-core-contracts)
+- [🧩 Library Modules](#-library-modules)
+- [🔁 Example Flows](#-example-flows)
+  - [🛒 Match Fixed Price Order](#-match-fixed-price-order)
+  - [🕒 Auction Bidding](#-auction-bidding)
+  - [🎯 Collection Bid](#-collection-bid)
+  - [🧩 `batchMatchOrders` Flow](#-batchmatchorders-flow)
+  - [🌳 `validateBulkOrderItem` Flow](#-validatebulkorderitem-flow)
+- [🔐 Security Considerations](#-security-considerations)
+- [⚙️ Setup and Deployment](#️-setup-and-deployment)
+- [🧱 Tech Stack](#-tech-stack)
+- [📄 License](#-license)
 
----
 
 ## 🧬 Overview
 
