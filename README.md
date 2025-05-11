@@ -1,202 +1,284 @@
-# LayerG Marketplace Contracts
 
-A comprehensive and flexible NFT marketplace smart contract supporting multiple asset types, order matching, auctions, and collection bids.
+# 📘 LayerG Marketplace - Full Smart Contract Documentation
 
-This repository contains the contracts for the LayerG Marketplace project:
+## Table of Contents
 
-- [LayerG Marketplace Contracts](./contracts)
+- [Overview](#overview)
+- [Contract Structure](#contract-structure)
+- [Core Contracts](#core-contracts)
+- [Library Modules](#library-modules)
+- [Example Flows](#example-flows)
+- [Security Considerations](#security-considerations)
+- [Tech Stack](#tech-stack)
+- [License](#license)
 
-## Deploy contract
+---
 
-- Run: npx hardhat run scripts/deploy.ts --network <your_network>
+## 🧬 Overview
 
-## Overview
+LayerG is an on-chain NFT marketplace with support for:
 
-This marketplace smart contract provides a decentralized platform for trading NFTs (ERC721 and ERC1155) and tokens (ERC20) with support for:
-
-- Order matching
-- Auctions with configurable parameters
+- ERC721 & ERC1155 tokens
+- Fixed-price and auction sales
 - Collection-wide bidding
-- Marketplace fees
-- Bulk order processing
+- Vault-based bid escrow
+- Modular asset transfer agents
+- Full signature validation (EOA & smart wallets)
 
-The contract is built with security in mind, implementing reentrancy guards, pausability, and ownership controls.
+---
 
-## Features
+## 📁 Contract Structure
 
-### Asset Support
-- ERC721
-- ERC1155
-- ERC20
-- Native cryptocurrency
-
-### Trading Mechanisms
-
-#### Order Matching
-- Create and fill orders with flexible asset types
-- Cancel orders when needed
-- Partial filling of orders
-- Bulk order processing
-
-#### Auctions
-- Time-bound auctions with configurable duration
-- Minimum bid increment enforcement
-- Buy-now price support
-- Automatic finalization when buy-now price is met
-
-#### Collection Bidding (only support ERC721 collection)
-- Bid on any item within an NFT collection
-- Set maximum quantity for collection bids
-- Time-bound bid validity
-
-### Security Features
-- Reentrancy protection
-- Pausable functionality
-- Owner-only administrative functions
-- Signature validation for orders and bids
-- Emergency fund recovery mechanism
-
-## Contract Architecture
-
-The marketplace relies on several helper libraries and interfaces:
-
-- `LibOrder`: Order data structures and validation
-- `LibAsset`: Asset type definitions and operations
-- `LibAuction`: Auction data structures and operations
-- `LibCollectionBid`: Collection bid structures and validation
-- `IAssetTransferAgent`: Interface for asset transfer operations
-- `IAuctionVault`: Interface for auction bid management
-- `Validator`: Base contract for signature validation
-
-## Key Parameters
-
-- `MAX_FEE_BPS`: Maximum fee in basis points (10000 = 100%)
-- `MIN_AUCTION_DURATION`: Minimum allowed auction duration (1 hour)
-- `MAX_AUCTION_DURATION`: Maximum allowed auction duration (30 days)
-- `MIN_BID_INCREMENT_BPS`: Minimum increment for successive bids (100 = 1%)
-
-## Main Functions
-
-### Order Management
-
-```solidity
-function matchOrders(
-    LibOrder.Order calldata makerOrder,
-    LibOrder.Order calldata takerOrder,
-    uint256 orderItemIndex,
-    bytes32[] calldata proof
-) external payable nonReentrant whenNotPaused
 ```
-Match a maker's order with a taker's order to execute a trade.
-
-```solidity
-function batchMatchOrders(
-    LibOrder.Order[] calldata makerOrders,
-    LibOrder.Order calldata takerOrder,
-    uint256[] calldata orderItemIndices,
-    bytes32[][] calldata proofs
-) external payable nonReentrant whenNotPaused
-```
-Match multiple maker orders with a single taker order in one transaction.
-
-```solidity
-function cancelOrder(
-    LibOrder.Order calldata order,
-    uint256 orderItemIndex
-) external nonReentrant whenNotPaused
-```
-Cancel an order that hasn't been fully filled.
-
-### Bidding
-
-```solidity
-function acceptBid(
-    LibOrder.Order calldata bidOrder,
-    uint256 orderItemIndex,
-    uint256 sellAmount
-) external nonReentrant whenNotPaused
-```
-Accept a bid from a buyer for your NFT.
-
-```solidity
-function acceptCollectionBid(
-    LibCollectionBid.CollectionBid calldata bid,
-    uint256 tokenId
-) external nonReentrant
-```
-Accept a collection-wide bid for a specific tokenId you own.
-
-### Auctions
-
-```solidity
-function submitAuctionBid(
-    LibAuction.Auction calldata auction
-) external payable nonReentrant whenNotPaused
-```
-Submit a bid for an active auction.
-
-```solidity
-function finalizeAuction(
-    LibAuction.Auction calldata auction,
-    bytes calldata signature
-) external nonReentrant whenNotPaused
-```
-Finalize an auction after it has ended.
-
-### Administrative Functions
-
-```solidity
-function setFeeRecipient(address _feeRecipient) external onlyOwner
-```
-Update the address that receives marketplace fees.
-
-```solidity
-function setFeeBps(uint256 _feeBps) external onlyOwner
-```
-Update the marketplace fee percentage (in basis points).
-
-```solidity
-function pause() external onlyOwner
-```
-Pause the marketplace in case of emergency.
-
-```solidity
-function unpause() external onlyOwner
-```
-Resume marketplace operations after pausing.
-
-## Events
-
-The contract emits various events to track marketplace activity:
-
-- `OrderMatched`: Emitted when an order is successfully matched
-- `CancelOrder`: Emitted when an order is cancelled
-- `AuctionBidSubmitted`: Emitted when a bid is submitted for an auction
-- `AuctionFinalized`: Emitted when an auction is finalized
-- Various administrative events for parameter updates
-
-## Setup and Deployment
-
-The contract requires several parameters during deployment:
-
-```solidity
-constructor(
-    address _feeRecipient,
-    address _assetTransferAgent,
-    address _auctionVault,
-    uint256 _feeBps
-)
+Marketplace.sol
+├── uses Validator (EIP712)
+├── calls:
+│   ├── AuctionVault.sol
+│   └── AssetTransferAgent.sol
+├── validates via:
+│   ├── LibOrder.sol
+│   ├── LibAuction.sol
+│   ├── LibCollectionBid.sol
+│   └── LibAsset.sol
 ```
 
-- `_feeRecipient`: Address to receive marketplace fees
-- `_assetTransferAgent`: Address of the asset transfer agent contract
-- `_auctionVault`: Address of the auction vault contract
-- `_feeBps`: Marketplace fee percentage in basis points (e.g., 250 = 2.5%)
+---
 
-## Security Considerations
+## ⚙️ Core Contracts
 
-- All external functions have reentrancy protection through the ReentrancyGuard
-- The contract can be paused in case of emergency
-- Owner functions are protected with the Ownable modifier
-- Orders and auctions are validated using cryptographic signatures
-- Emergency fund recovery is available for the contract owner
+### `Marketplace.sol`
+
+Main contract responsible for:
+
+- Order matching (`matchOrders`, `acceptBid`)
+- Auctions (`submitAuctionBid`, `finalizeAuction`)
+- Collection bids (`acceptCollectionBid`)
+- Manages fee handling and calls external transfers
+
+### `AuctionVault.sol`
+
+Secure vault holding bid deposits:
+
+- `deposit`: escrow ETH/ERC20 bids
+- `refund`: returns overbid deposits
+- `finalize`: pays out winning bids
+- `emergencyWithdraw`: fallback for stuck funds
+
+### `AssetTransferAgent.sol`
+
+Handles actual asset transfers:
+
+- `transferERC721`
+- `transferERC1155`
+- `transferERC20`
+
+Only callable by `Marketplace`.
+
+### `Validator.sol`
+
+EIP-712 domain + hash helpers:
+
+- `hashOrder`, `hashAuction`, `hashCollectionBid`
+- `validateOrderSigner` (EOA or ERC1271 smart wallets)
+- `validateBulkOrderItem` using Merkle proof
+
+---
+
+## 🧩 Library Modules
+
+### `LibOrder.sol`
+
+Defines fixed-price order structure and helpers:
+
+```solidity
+enum OrderType { BID, ASK, BULK }
+
+struct Order {
+  OrderType orderType;
+  OrderItem[] items;
+  address maker;
+  address taker;
+  bytes32 root;
+  uint256 salt;
+  bytes signature;
+}
+```
+
+Includes:
+
+- `hash(order)`
+- `isExpired(order, index)`
+- `recoverSigner(orderHash, signature)`
+
+---
+
+### `LibAuction.sol`
+
+Signed auction object used off-chain:
+
+```solidity
+struct Auction {
+  address maker;
+  Asset asset;
+  uint256 startPrice;
+  uint256 buyNowPrice;
+  uint256 startTime;
+  uint256 endTime;
+  uint256 salt;
+  bytes signature;
+}
+```
+
+---
+
+### `LibCollectionBid.sol`
+
+Supports signed bid for entire ERC721 collection:
+
+```solidity
+struct CollectionBid {
+  address bidder;
+  Asset makeAssetPerItem;
+  address collectionAddress;
+  uint256 maxQuantity;
+  uint256 start;
+  uint256 end;
+  uint256 salt;
+  bytes signature;
+}
+```
+
+---
+
+### `LibAsset.sol`
+
+Used in all orders, auctions, and bids:
+
+```solidity
+enum AssetType { NATIVE, ERC20, ERC1155, ERC721 }
+
+struct Asset {
+  AssetType assetType;
+  address contractAddress;
+  uint256 assetId;
+  uint256 assetAmount;
+}
+```
+
+---
+
+## 🔁 Example Flows
+
+### 🛒 Match Fixed Price Order
+
+1. Seller signs `Order`
+2. Buyer calls `matchOrders`
+3. Contract validates both, transfers assets and applies fee
+
+---
+
+### 🕒 Auction Bidding
+
+1. Seller signs `Auction`
+2. Bidder submits ETH using `submitAuctionBid`
+3. Contract checks previous bid and vaults new deposit
+4. Auction ends → `finalizeAuction()` sends NFT + payout
+
+---
+
+### 🎯 Collection Bid
+
+1. Bidder signs `CollectionBid`
+2. Seller with matching collection NFT calls `acceptCollectionBid`
+3. Contract verifies signature, NFT ownership, and transfers
+
+---
+
+## 🔐 Security Considerations
+
+- **Vault-based escrow**: isolates funds
+- **ReentrancyGuard**: all external transfers protected
+- **Pausable**: circuit breaker for all entry points
+- **ERC1271**: contract wallet compatibility
+- **Merkle Proofs**: scalable bulk listing support
+
+---
+
+## 🔧 Tech Stack
+
+- Solidity `^0.8.20`
+- OpenZeppelin: access, security, token utils
+- EIP-712: off-chain signatures
+- ERC721, ERC1155, ERC20 compatible
+
+---
+
+## 📄 License
+
+MIT License © LayerG 2024
+
+---
+
+## 🔐 Security Considerations
+
+The LayerG marketplace is built with security-first design principles:
+
+### ✅ Vault-Based Deposit System
+- Bids are deposited into `AuctionVault`, not stored in the marketplace.
+- Funds are only moved on `refund`, `finalize`, or `emergencyWithdraw`.
+
+### ✅ Reentrancy Protection
+- All external calls (deposit, refund, finalize) use `nonReentrant`.
+
+### ✅ Signature Verification
+- All off-chain data uses EIP-712 signing with domain separators.
+- Supports both EOAs and smart wallets via ERC1271.
+
+### ✅ Pausable Circuit Breaker
+- Admin can pause marketplace or vault during emergency using `pause()`.
+
+### ✅ Time-locked Emergency Withdrawals
+- Users can self-withdraw from vault after timeout if auction becomes stuck.
+
+---
+
+## ⚙️ Setup and Deployment
+
+### 1. Deploy `AssetTransferAgent`
+
+```solidity
+AssetTransferAgent agent = new AssetTransferAgent();
+```
+
+### 2. Deploy `AuctionVault` with operator set to marketplace address
+
+```solidity
+AuctionVault vault = new AuctionVault(address(0)); // placeholder for operator
+```
+
+### 3. Deploy `Marketplace`
+
+```solidity
+Marketplace market = new Marketplace(
+  feeRecipient,
+  address(agent),
+  address(vault),
+  feeBps // example: 250 = 2.5%
+);
+```
+
+### 4. Set Marketplace as operator
+
+```solidity
+agent.setMarketplace(address(market));
+vault.setOperator(address(market));
+```
+
+### 5. Set Role Configuration
+
+```solidity
+market.setFeeRecipient(feeRecipient);
+market.setAssetTransferAgent(address(agent));
+market.setAuctionVault(address(vault));
+market.setFeeBps(250); // 2.5%
+```

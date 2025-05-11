@@ -455,12 +455,13 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
     ) external nonReentrant {
         LibAsset.Asset calldata makeAssetPerItem = bid.makeAssetPerItem;
         address bidder = bid.bidder;
+        address seller = msg.sender;
         address collectionAddress = bid.collectionAddress;
         bytes calldata signature = bid.signature;
 
         require(_isERC721(collectionAddress), "Bid collection is not ERC721");
         require(!LibCollectionBid.isExpired(bid), "Bid expired");
-        require(bid.bidder == msg.sender, "Sender is not the bidder");
+        require(seller != bidder, "Bidder cannot accept own bid");
 
         bytes32 collectionBidHash = hashCollectionBid(bid);
 
@@ -477,13 +478,9 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
         );
         require(signer == bid.bidder, "Invalid signature");
 
-        // Update fulfilled quantity
-        collectionBidFillAmount[collectionBidHash]++;
-
-        // Calculate total price
+        // Calculate total price: totalPrice = price * quantity (currently only support ERC721 so quantity = 1)
         uint256 totalPrice = makeAssetPerItem.assetAmount;
 
-        // Transfer token from bidder to msg.sender, nft from msg.sender to bidder
         LibAsset.Asset memory makeAsset = LibAsset.Asset({
             assetType: LibAsset.AssetType.ERC721,
             contractAddress: bid.collectionAddress,
@@ -497,10 +494,18 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
             assetAmount: totalPrice
         });
 
-        _transferWithFee(bidder, msg.sender, takeAsset);
-        _transferWithFee(msg.sender, bidder, makeAsset);
+        // Verify token ownership
+        _verifyAssetOwnership(seller, makeAsset);
 
-        emit OrderMatched(collectionBidHash, bidder, msg.sender, totalPrice);
+        // Update fulfilled quantity
+        collectionBidFillAmount[collectionBidHash]++;
+
+        // Transfer token from bidder to seller, nft from seller to bidder
+
+        _transferWithFee(bidder, seller, takeAsset);
+        _transferWithFee(seller, bidder, makeAsset);
+
+        emit OrderMatched(collectionBidHash, bidder, seller, totalPrice);
     }
 
     /**
