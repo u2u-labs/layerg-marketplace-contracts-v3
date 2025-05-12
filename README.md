@@ -219,12 +219,6 @@ struct Asset {
 
 ---
 
-## 📄 License
-
-MIT License © LayerG 2024
-
----
-
 ## 🔐 Security Considerations
 
 The LayerG marketplace is built with security-first design principles:
