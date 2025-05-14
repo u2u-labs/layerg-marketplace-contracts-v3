@@ -34,7 +34,7 @@ library LibAsset {
             );
     }
 
-    function validateCompatibleAsset(
+    function validateCompatibleAssetMetadata(
         Asset calldata requestedAsset,
         Asset calldata offeredAsset
     ) internal pure {
@@ -50,9 +50,13 @@ library LibAsset {
             requestedAsset.assetId == offeredAsset.assetId,
             "Asset ID mismatch"
         );
-        require(
-            offeredAsset.assetAmount <= requestedAsset.assetAmount,
-            "Offered amount exceeds requested"
-        );
+    }
+
+    function validateCompatibleAssetWithAmountCap(
+        Asset calldata requested,
+        Asset calldata offered
+    ) internal pure {
+        validateCompatibleAssetMetadata(requested, offered);
+        require(offered.assetAmount <= requested.assetAmount, "Amount exceeds");
     }
 }

@@ -3,4 +3,3 @@
 /* eslint-disable */
 export type { SessionReceipt } from "./SessionReceipt";
 export type { UsageDepositor } from "./UsageDepositor";
-export type { UsageOrderValidator } from "./UsageOrderValidator";

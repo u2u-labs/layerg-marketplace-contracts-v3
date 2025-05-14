@@ -93,40 +93,144 @@ export declare namespace LibOrder {
   };
 }
 
+export declare namespace LibCollectionBid {
+  export type CollectionBidStruct = {
+    bidder: AddressLike;
+    makeAssetPerItem: LibAsset.AssetStruct;
+    collectionAddress: AddressLike;
+    maxQuantity: BigNumberish;
+    start: BigNumberish;
+    end: BigNumberish;
+    salt: BigNumberish;
+    signature: BytesLike;
+  };
+
+  export type CollectionBidStructOutput = [
+    bidder: string,
+    makeAssetPerItem: LibAsset.AssetStructOutput,
+    collectionAddress: string,
+    maxQuantity: bigint,
+    start: bigint,
+    end: bigint,
+    salt: bigint,
+    signature: string
+  ] & {
+    bidder: string;
+    makeAssetPerItem: LibAsset.AssetStructOutput;
+    collectionAddress: string;
+    maxQuantity: bigint;
+    start: bigint;
+    end: bigint;
+    salt: bigint;
+    signature: string;
+  };
+}
+
+export declare namespace LibAuction {
+  export type AuctionStruct = {
+    maker: AddressLike;
+    asset: LibAsset.AssetStruct;
+    startPrice: BigNumberish;
+    buyNowPrice: BigNumberish;
+    startTime: BigNumberish;
+    endTime: BigNumberish;
+    salt: BigNumberish;
+    signature: BytesLike;
+  };
+
+  export type AuctionStructOutput = [
+    maker: string,
+    asset: LibAsset.AssetStructOutput,
+    startPrice: bigint,
+    buyNowPrice: bigint,
+    startTime: bigint,
+    endTime: bigint,
+    salt: bigint,
+    signature: string
+  ] & {
+    maker: string;
+    asset: LibAsset.AssetStructOutput;
+    startPrice: bigint;
+    buyNowPrice: bigint;
+    startTime: bigint;
+    endTime: bigint;
+    salt: bigint;
+    signature: string;
+  };
+}
+
 export interface MarketplaceInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "MAX_AUCTION_DURATION"
       | "MAX_FEE_BPS"
+      | "MIN_AUCTION_DURATION"
+      | "MIN_BID_INCREMENT_BPS"
       | "acceptBid"
+      | "acceptCollectionBid"
       | "assetTransferAgent"
+      | "auctionFinalized"
+      | "auctionVault"
       | "batchMatchOrders"
       | "cancelOrder"
+      | "collectionBidFillAmount"
       | "eip712Domain"
+      | "emergencyWithdraw"
       | "feeBps"
       | "feeRecipient"
+      | "finalizeAuction"
+      | "highestBids"
       | "isOrderCancelled"
       | "isOrderFullyFilled"
       | "matchOrders"
       | "orderFillAmount"
       | "owner"
+      | "pause"
+      | "paused"
       | "renounceOwnership"
       | "setAssetTransferAgent"
+      | "setAuctionVault"
       | "setFeeBps"
       | "setFeeRecipient"
+      | "submitAuctionBid"
       | "transferOwnership"
+      | "unpause"
       | "verifyMerkleProof"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
+      | "AssetTransferAgentUpdated"
+      | "AuctionBidSubmitted"
+      | "AuctionFinalized"
+      | "AuctionVaultUpdated"
       | "CancelOrder"
       | "EIP712DomainChanged"
+      | "EmergencyWithdrawal"
+      | "FeeBpsUpdated"
+      | "FeeRecipientUpdated"
+      | "MarketplacePaused"
+      | "MarketplaceUnpaused"
       | "OrderMatched"
       | "OwnershipTransferred"
+      | "Paused"
+      | "Unpaused"
   ): EventFragment;
 
   encodeFunctionData(
+    functionFragment: "MAX_AUCTION_DURATION",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "MAX_FEE_BPS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MIN_AUCTION_DURATION",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MIN_BID_INCREMENT_BPS",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -134,7 +238,19 @@ export interface MarketplaceInterface extends Interface {
     values: [LibOrder.OrderStruct, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "acceptCollectionBid",
+    values: [LibCollectionBid.CollectionBidStruct, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "assetTransferAgent",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "auctionFinalized",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "auctionVault",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -151,13 +267,29 @@ export interface MarketplaceInterface extends Interface {
     values: [LibOrder.OrderStruct, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "collectionBidFillAmount",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "eip712Domain",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "emergencyWithdraw",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "feeBps", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "feeRecipient",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "finalizeAuction",
+    values: [LibAuction.AuctionStruct, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "highestBids",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "isOrderCancelled",
@@ -181,12 +313,18 @@ export interface MarketplaceInterface extends Interface {
     values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "setAssetTransferAgent",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAuctionVault",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -198,21 +336,50 @@ export interface MarketplaceInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "submitAuctionBid",
+    values: [LibAuction.AuctionStruct]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "verifyMerkleProof",
     values: [BytesLike[], BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "MAX_AUCTION_DURATION",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "MAX_FEE_BPS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MIN_AUCTION_DURATION",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MIN_BID_INCREMENT_BPS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "acceptBid", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "acceptCollectionBid",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "assetTransferAgent",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "auctionFinalized",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "auctionVault",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -224,12 +391,28 @@ export interface MarketplaceInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "collectionBidFillAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "eip712Domain",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "emergencyWithdraw",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "feeBps", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "feeRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "finalizeAuction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "highestBids",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -249,6 +432,8 @@ export interface MarketplaceInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -257,26 +442,121 @@ export interface MarketplaceInterface extends Interface {
     functionFragment: "setAssetTransferAgent",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAuctionVault",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setFeeBps", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setFeeRecipient",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "submitAuctionBid",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "verifyMerkleProof",
     data: BytesLike
   ): Result;
 }
 
+export namespace AssetTransferAgentUpdatedEvent {
+  export type InputTuple = [oldAgent: AddressLike, newAgent: AddressLike];
+  export type OutputTuple = [oldAgent: string, newAgent: string];
+  export interface OutputObject {
+    oldAgent: string;
+    newAgent: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace AuctionBidSubmittedEvent {
+  export type InputTuple = [
+    auctionHash: BytesLike,
+    bidder: AddressLike,
+    amount: BigNumberish,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [
+    auctionHash: string,
+    bidder: string,
+    amount: bigint,
+    timestamp: bigint
+  ];
+  export interface OutputObject {
+    auctionHash: string;
+    bidder: string;
+    amount: bigint;
+    timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace AuctionFinalizedEvent {
+  export type InputTuple = [
+    auctionHash: BytesLike,
+    winner: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [
+    auctionHash: string,
+    winner: string,
+    amount: bigint
+  ];
+  export interface OutputObject {
+    auctionHash: string;
+    winner: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace AuctionVaultUpdatedEvent {
+  export type InputTuple = [
+    oldAuctionVault: AddressLike,
+    newAuctionVault: AddressLike
+  ];
+  export type OutputTuple = [oldAuctionVault: string, newAuctionVault: string];
+  export interface OutputObject {
+    oldAuctionVault: string;
+    newAuctionVault: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace CancelOrderEvent {
-  export type InputTuple = [orderHash: BytesLike];
-  export type OutputTuple = [orderHash: string];
+  export type InputTuple = [
+    orderHash: BytesLike,
+    maker: AddressLike,
+    orderItemIndex: BigNumberish
+  ];
+  export type OutputTuple = [
+    orderHash: string,
+    maker: string,
+    orderItemIndex: bigint
+  ];
   export interface OutputObject {
     orderHash: string;
+    maker: string;
+    orderItemIndex: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -288,6 +568,72 @@ export namespace EIP712DomainChangedEvent {
   export type InputTuple = [];
   export type OutputTuple = [];
   export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace EmergencyWithdrawalEvent {
+  export type InputTuple = [recipient: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [recipient: string, amount: bigint];
+  export interface OutputObject {
+    recipient: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace FeeBpsUpdatedEvent {
+  export type InputTuple = [oldFeeBps: BigNumberish, newFeeBps: BigNumberish];
+  export type OutputTuple = [oldFeeBps: bigint, newFeeBps: bigint];
+  export interface OutputObject {
+    oldFeeBps: bigint;
+    newFeeBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace FeeRecipientUpdatedEvent {
+  export type InputTuple = [
+    oldRecipient: AddressLike,
+    newRecipient: AddressLike
+  ];
+  export type OutputTuple = [oldRecipient: string, newRecipient: string];
+  export interface OutputObject {
+    oldRecipient: string;
+    newRecipient: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MarketplacePausedEvent {
+  export type InputTuple = [operator: AddressLike];
+  export type OutputTuple = [operator: string];
+  export interface OutputObject {
+    operator: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace MarketplaceUnpausedEvent {
+  export type InputTuple = [operator: AddressLike];
+  export type OutputTuple = [operator: string];
+  export interface OutputObject {
+    operator: string;
+  }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
   export type Log = TypedEventLog<Event>;
@@ -325,6 +671,30 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -375,7 +745,13 @@ export interface Marketplace extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  MAX_AUCTION_DURATION: TypedContractMethod<[], [bigint], "view">;
+
   MAX_FEE_BPS: TypedContractMethod<[], [bigint], "view">;
+
+  MIN_AUCTION_DURATION: TypedContractMethod<[], [bigint], "view">;
+
+  MIN_BID_INCREMENT_BPS: TypedContractMethod<[], [bigint], "view">;
 
   acceptBid: TypedContractMethod<
     [
@@ -384,10 +760,20 @@ export interface Marketplace extends BaseContract {
       sellAmount: BigNumberish
     ],
     [void],
-    "payable"
+    "nonpayable"
+  >;
+
+  acceptCollectionBid: TypedContractMethod<
+    [bid: LibCollectionBid.CollectionBidStruct, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
   >;
 
   assetTransferAgent: TypedContractMethod<[], [string], "view">;
+
+  auctionFinalized: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+
+  auctionVault: TypedContractMethod<[], [string], "view">;
 
   batchMatchOrders: TypedContractMethod<
     [
@@ -406,6 +792,12 @@ export interface Marketplace extends BaseContract {
     "nonpayable"
   >;
 
+  collectionBidFillAmount: TypedContractMethod<
+    [arg0: BytesLike],
+    [bigint],
+    "view"
+  >;
+
   eip712Domain: TypedContractMethod<
     [],
     [
@@ -422,9 +814,29 @@ export interface Marketplace extends BaseContract {
     "view"
   >;
 
+  emergencyWithdraw: TypedContractMethod<[], [void], "nonpayable">;
+
   feeBps: TypedContractMethod<[], [bigint], "view">;
 
   feeRecipient: TypedContractMethod<[], [string], "view">;
+
+  finalizeAuction: TypedContractMethod<
+    [auction: LibAuction.AuctionStruct, signature: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  highestBids: TypedContractMethod<
+    [arg0: BytesLike],
+    [
+      [string, bigint, bigint] & {
+        bidder: string;
+        amount: bigint;
+        timestamp: bigint;
+      }
+    ],
+    "view"
+  >;
 
   isOrderCancelled: TypedContractMethod<
     [order: LibOrder.OrderStruct, orderItemIndex: BigNumberish],
@@ -457,10 +869,20 @@ export interface Marketplace extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  pause: TypedContractMethod<[], [void], "nonpayable">;
+
+  paused: TypedContractMethod<[], [boolean], "view">;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   setAssetTransferAgent: TypedContractMethod<
     [_agent: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setAuctionVault: TypedContractMethod<
+    [_auctionVault: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -473,11 +895,19 @@ export interface Marketplace extends BaseContract {
     "nonpayable"
   >;
 
+  submitAuctionBid: TypedContractMethod<
+    [auction: LibAuction.AuctionStruct],
+    [void],
+    "payable"
+  >;
+
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
     [void],
     "nonpayable"
   >;
+
+  unpause: TypedContractMethod<[], [void], "nonpayable">;
 
   verifyMerkleProof: TypedContractMethod<
     [proof: BytesLike[], root: BytesLike, leaf: BytesLike],
@@ -490,7 +920,16 @@ export interface Marketplace extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "MAX_AUCTION_DURATION"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "MAX_FEE_BPS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MIN_AUCTION_DURATION"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MIN_BID_INCREMENT_BPS"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "acceptBid"
@@ -501,10 +940,23 @@ export interface Marketplace extends BaseContract {
       sellAmount: BigNumberish
     ],
     [void],
-    "payable"
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "acceptCollectionBid"
+  ): TypedContractMethod<
+    [bid: LibCollectionBid.CollectionBidStruct, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
   >;
   getFunction(
     nameOrSignature: "assetTransferAgent"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "auctionFinalized"
+  ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "auctionVault"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "batchMatchOrders"
@@ -526,6 +978,9 @@ export interface Marketplace extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "collectionBidFillAmount"
+  ): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
+  getFunction(
     nameOrSignature: "eip712Domain"
   ): TypedContractMethod<
     [],
@@ -543,11 +998,34 @@ export interface Marketplace extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "emergencyWithdraw"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "feeBps"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "feeRecipient"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "finalizeAuction"
+  ): TypedContractMethod<
+    [auction: LibAuction.AuctionStruct, signature: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "highestBids"
+  ): TypedContractMethod<
+    [arg0: BytesLike],
+    [
+      [string, bigint, bigint] & {
+        bidder: string;
+        amount: bigint;
+        timestamp: bigint;
+      }
+    ],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "isOrderCancelled"
   ): TypedContractMethod<
@@ -585,11 +1063,20 @@ export interface Marketplace extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "pause"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "paused"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setAssetTransferAgent"
   ): TypedContractMethod<[_agent: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setAuctionVault"
+  ): TypedContractMethod<[_auctionVault: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setFeeBps"
   ): TypedContractMethod<[_feeBps: BigNumberish], [void], "nonpayable">;
@@ -597,8 +1084,18 @@ export interface Marketplace extends BaseContract {
     nameOrSignature: "setFeeRecipient"
   ): TypedContractMethod<[_feeRecipient: AddressLike], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "submitAuctionBid"
+  ): TypedContractMethod<
+    [auction: LibAuction.AuctionStruct],
+    [void],
+    "payable"
+  >;
+  getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "unpause"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "verifyMerkleProof"
   ): TypedContractMethod<
@@ -607,6 +1104,34 @@ export interface Marketplace extends BaseContract {
     "view"
   >;
 
+  getEvent(
+    key: "AssetTransferAgentUpdated"
+  ): TypedContractEvent<
+    AssetTransferAgentUpdatedEvent.InputTuple,
+    AssetTransferAgentUpdatedEvent.OutputTuple,
+    AssetTransferAgentUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "AuctionBidSubmitted"
+  ): TypedContractEvent<
+    AuctionBidSubmittedEvent.InputTuple,
+    AuctionBidSubmittedEvent.OutputTuple,
+    AuctionBidSubmittedEvent.OutputObject
+  >;
+  getEvent(
+    key: "AuctionFinalized"
+  ): TypedContractEvent<
+    AuctionFinalizedEvent.InputTuple,
+    AuctionFinalizedEvent.OutputTuple,
+    AuctionFinalizedEvent.OutputObject
+  >;
+  getEvent(
+    key: "AuctionVaultUpdated"
+  ): TypedContractEvent<
+    AuctionVaultUpdatedEvent.InputTuple,
+    AuctionVaultUpdatedEvent.OutputTuple,
+    AuctionVaultUpdatedEvent.OutputObject
+  >;
   getEvent(
     key: "CancelOrder"
   ): TypedContractEvent<
@@ -622,6 +1147,41 @@ export interface Marketplace extends BaseContract {
     EIP712DomainChangedEvent.OutputObject
   >;
   getEvent(
+    key: "EmergencyWithdrawal"
+  ): TypedContractEvent<
+    EmergencyWithdrawalEvent.InputTuple,
+    EmergencyWithdrawalEvent.OutputTuple,
+    EmergencyWithdrawalEvent.OutputObject
+  >;
+  getEvent(
+    key: "FeeBpsUpdated"
+  ): TypedContractEvent<
+    FeeBpsUpdatedEvent.InputTuple,
+    FeeBpsUpdatedEvent.OutputTuple,
+    FeeBpsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "FeeRecipientUpdated"
+  ): TypedContractEvent<
+    FeeRecipientUpdatedEvent.InputTuple,
+    FeeRecipientUpdatedEvent.OutputTuple,
+    FeeRecipientUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MarketplacePaused"
+  ): TypedContractEvent<
+    MarketplacePausedEvent.InputTuple,
+    MarketplacePausedEvent.OutputTuple,
+    MarketplacePausedEvent.OutputObject
+  >;
+  getEvent(
+    key: "MarketplaceUnpaused"
+  ): TypedContractEvent<
+    MarketplaceUnpausedEvent.InputTuple,
+    MarketplaceUnpausedEvent.OutputTuple,
+    MarketplaceUnpausedEvent.OutputObject
+  >;
+  getEvent(
     key: "OrderMatched"
   ): TypedContractEvent<
     OrderMatchedEvent.InputTuple,
@@ -635,9 +1195,67 @@ export interface Marketplace extends BaseContract {
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
   >;
+  getEvent(
+    key: "Paused"
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
+    key: "Unpaused"
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
+  >;
 
   filters: {
-    "CancelOrder(bytes32)": TypedContractEvent<
+    "AssetTransferAgentUpdated(address,address)": TypedContractEvent<
+      AssetTransferAgentUpdatedEvent.InputTuple,
+      AssetTransferAgentUpdatedEvent.OutputTuple,
+      AssetTransferAgentUpdatedEvent.OutputObject
+    >;
+    AssetTransferAgentUpdated: TypedContractEvent<
+      AssetTransferAgentUpdatedEvent.InputTuple,
+      AssetTransferAgentUpdatedEvent.OutputTuple,
+      AssetTransferAgentUpdatedEvent.OutputObject
+    >;
+
+    "AuctionBidSubmitted(bytes32,address,uint256,uint256)": TypedContractEvent<
+      AuctionBidSubmittedEvent.InputTuple,
+      AuctionBidSubmittedEvent.OutputTuple,
+      AuctionBidSubmittedEvent.OutputObject
+    >;
+    AuctionBidSubmitted: TypedContractEvent<
+      AuctionBidSubmittedEvent.InputTuple,
+      AuctionBidSubmittedEvent.OutputTuple,
+      AuctionBidSubmittedEvent.OutputObject
+    >;
+
+    "AuctionFinalized(bytes32,address,uint256)": TypedContractEvent<
+      AuctionFinalizedEvent.InputTuple,
+      AuctionFinalizedEvent.OutputTuple,
+      AuctionFinalizedEvent.OutputObject
+    >;
+    AuctionFinalized: TypedContractEvent<
+      AuctionFinalizedEvent.InputTuple,
+      AuctionFinalizedEvent.OutputTuple,
+      AuctionFinalizedEvent.OutputObject
+    >;
+
+    "AuctionVaultUpdated(address,address)": TypedContractEvent<
+      AuctionVaultUpdatedEvent.InputTuple,
+      AuctionVaultUpdatedEvent.OutputTuple,
+      AuctionVaultUpdatedEvent.OutputObject
+    >;
+    AuctionVaultUpdated: TypedContractEvent<
+      AuctionVaultUpdatedEvent.InputTuple,
+      AuctionVaultUpdatedEvent.OutputTuple,
+      AuctionVaultUpdatedEvent.OutputObject
+    >;
+
+    "CancelOrder(bytes32,address,uint256)": TypedContractEvent<
       CancelOrderEvent.InputTuple,
       CancelOrderEvent.OutputTuple,
       CancelOrderEvent.OutputObject
@@ -657,6 +1275,61 @@ export interface Marketplace extends BaseContract {
       EIP712DomainChangedEvent.InputTuple,
       EIP712DomainChangedEvent.OutputTuple,
       EIP712DomainChangedEvent.OutputObject
+    >;
+
+    "EmergencyWithdrawal(address,uint256)": TypedContractEvent<
+      EmergencyWithdrawalEvent.InputTuple,
+      EmergencyWithdrawalEvent.OutputTuple,
+      EmergencyWithdrawalEvent.OutputObject
+    >;
+    EmergencyWithdrawal: TypedContractEvent<
+      EmergencyWithdrawalEvent.InputTuple,
+      EmergencyWithdrawalEvent.OutputTuple,
+      EmergencyWithdrawalEvent.OutputObject
+    >;
+
+    "FeeBpsUpdated(uint256,uint256)": TypedContractEvent<
+      FeeBpsUpdatedEvent.InputTuple,
+      FeeBpsUpdatedEvent.OutputTuple,
+      FeeBpsUpdatedEvent.OutputObject
+    >;
+    FeeBpsUpdated: TypedContractEvent<
+      FeeBpsUpdatedEvent.InputTuple,
+      FeeBpsUpdatedEvent.OutputTuple,
+      FeeBpsUpdatedEvent.OutputObject
+    >;
+
+    "FeeRecipientUpdated(address,address)": TypedContractEvent<
+      FeeRecipientUpdatedEvent.InputTuple,
+      FeeRecipientUpdatedEvent.OutputTuple,
+      FeeRecipientUpdatedEvent.OutputObject
+    >;
+    FeeRecipientUpdated: TypedContractEvent<
+      FeeRecipientUpdatedEvent.InputTuple,
+      FeeRecipientUpdatedEvent.OutputTuple,
+      FeeRecipientUpdatedEvent.OutputObject
+    >;
+
+    "MarketplacePaused(address)": TypedContractEvent<
+      MarketplacePausedEvent.InputTuple,
+      MarketplacePausedEvent.OutputTuple,
+      MarketplacePausedEvent.OutputObject
+    >;
+    MarketplacePaused: TypedContractEvent<
+      MarketplacePausedEvent.InputTuple,
+      MarketplacePausedEvent.OutputTuple,
+      MarketplacePausedEvent.OutputObject
+    >;
+
+    "MarketplaceUnpaused(address)": TypedContractEvent<
+      MarketplaceUnpausedEvent.InputTuple,
+      MarketplaceUnpausedEvent.OutputTuple,
+      MarketplaceUnpausedEvent.OutputObject
+    >;
+    MarketplaceUnpaused: TypedContractEvent<
+      MarketplaceUnpausedEvent.InputTuple,
+      MarketplaceUnpausedEvent.OutputTuple,
+      MarketplaceUnpausedEvent.OutputObject
     >;
 
     "OrderMatched(bytes32,address,address,uint256)": TypedContractEvent<
@@ -679,6 +1352,28 @@ export interface Marketplace extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "Paused(address)": TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
+    "Unpaused(address)": TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
     >;
   };
 }

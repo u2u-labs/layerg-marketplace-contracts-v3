@@ -240,6 +240,11 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
         uint256 orderItemIndex,
         bytes32[] calldata proof
     ) external payable nonReentrant whenNotPaused {
+        require(
+            makerOrder.orderType != LibOrder.OrderType.BID,
+            "matchOrders not supported for BID"
+        );
+
         LibOrder.OrderItem calldata makerOrderItem = makerOrder.items[
             orderItemIndex
         ];
@@ -252,6 +257,7 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
 
         bytes32 makerOrderHash = LibOrder.hash(makerOrder);
         uint256 fillAmount = takerOrderItem.takeAsset.assetAmount;
+        uint256 totalPrice = makerOrderItem.takeAsset.assetAmount * fillAmount;
 
         _fillOrder(
             makerOrderHash,
@@ -274,14 +280,11 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
             makerOrderItem.takeAsset.assetType,
             makerOrderItem.takeAsset.contractAddress,
             makerOrderItem.takeAsset.assetId,
-            fillAmount
+            totalPrice
         );
 
         if (takeAsset.assetType == LibAsset.AssetType.NATIVE) {
-            require(
-                msg.value >= takeAsset.assetAmount,
-                "Insufficient msg.value"
-            );
+            require(msg.value >= totalPrice, "Insufficient msg.value");
         }
 
         _transferWithFee(taker, maker, takeAsset);
@@ -315,6 +318,10 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
         for (uint256 i = 0; i < makerOrders.length; i++) {
             // Validate array elements
             require(
+                makerOrders[i].orderType != LibOrder.OrderType.BID,
+                "matchOrders not supported for BID"
+            );
+            require(
                 address(makerOrders[i].maker) != address(0),
                 "Invalid maker address"
             );
@@ -339,6 +346,8 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
 
             bytes32 makerOrderHash = LibOrder.hash(makerOrder);
             uint256 fillAmount = takerOrderItem.takeAsset.assetAmount;
+            uint256 totalPrice = makerOrderItem.takeAsset.assetAmount *
+                fillAmount;
 
             _fillOrder(
                 makerOrderHash,
@@ -361,11 +370,11 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
                 makerOrderItem.takeAsset.assetType,
                 makerOrderItem.takeAsset.contractAddress,
                 makerOrderItem.takeAsset.assetId,
-                fillAmount
+                totalPrice
             );
 
             if (takeAsset.assetType == LibAsset.AssetType.NATIVE) {
-                totalNativeAmount += takeAsset.assetAmount;
+                totalNativeAmount += totalPrice;
             }
 
             _transferWithFee(taker, maker, takeAsset);
@@ -854,7 +863,7 @@ contract Marketplace is ReentrancyGuard, Ownable, Pausable, Validator {
             );
         } else if (asset.assetType == LibAsset.AssetType.ERC20) {
             require(
-                IERC20(asset.contractAddress).balanceOf(assetOwner) ==
+                IERC20(asset.contractAddress).balanceOf(assetOwner) >=
                     asset.assetAmount,
                 "Insufficient ERC20 balance"
             );

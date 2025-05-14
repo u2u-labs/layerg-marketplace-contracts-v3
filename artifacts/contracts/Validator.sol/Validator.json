@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "OrderValidator",
-  "sourceName": "contracts/OrderValidator.sol",
+  "contractName": "Validator",
+  "sourceName": "contracts/Validator.sol",
   "abi": [
     {
       "inputs": [],

@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "LibCollectionBid",
+  "sourceName": "contracts/libraries/LibCollectionBid.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea264697066735822122036a40a645e66424f36a15150d1879a4003d4df0833d4830618993c2fc4c47db464736f6c634300081c0033",
+  "deployedBytecode": "0x600080fdfea264697066735822122036a40a645e66424f36a15150d1879a4003d4df0833d4830618993c2fc4c47db464736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

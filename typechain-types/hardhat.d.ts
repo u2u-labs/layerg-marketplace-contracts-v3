@@ -26,6 +26,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC5267__factory>;
     getContractFactory(
+      name: "Pausable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Pausable__factory>;
+    getContractFactory(
       name: "IERC1155",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC1155__factory>;
@@ -70,13 +74,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AssetTransferAgent__factory>;
     getContractFactory(
+      name: "AuctionVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AuctionVault__factory>;
+    getContractFactory(
       name: "IAssetTransferAgent",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IAssetTransferAgent__factory>;
     getContractFactory(
-      name: "INodeAdmin",
+      name: "IAuctionVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.INodeAdmin__factory>;
+    ): Promise<Contracts.IAuctionVault__factory>;
     getContractFactory(
       name: "INodesStorage",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -90,6 +98,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IVault__factory>;
     getContractFactory(
+      name: "LibAuction",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LibAuction__factory>;
+    getContractFactory(
       name: "Marketplace",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Marketplace__factory>;
@@ -102,10 +114,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.NodesStorage__factory>;
     getContractFactory(
-      name: "OrderValidator",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.OrderValidator__factory>;
-    getContractFactory(
       name: "SessionReceipt",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SessionReceipt__factory>;
@@ -114,9 +122,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UsageDepositor__factory>;
     getContractFactory(
-      name: "UsageOrderValidator",
+      name: "Validator",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UsageOrderValidator__factory>;
+    ): Promise<Contracts.Validator__factory>;
     getContractFactory(
       name: "Voting",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -138,6 +146,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC5267>;
     getContractAt(
+      name: "Pausable",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Pausable>;
+    getContractAt(
       name: "IERC1155",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -193,15 +206,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.AssetTransferAgent>;
     getContractAt(
+      name: "AuctionVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AuctionVault>;
+    getContractAt(
       name: "IAssetTransferAgent",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IAssetTransferAgent>;
     getContractAt(
-      name: "INodeAdmin",
+      name: "IAuctionVault",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.INodeAdmin>;
+    ): Promise<Contracts.IAuctionVault>;
     getContractAt(
       name: "INodesStorage",
       address: string | ethers.Addressable,
@@ -218,6 +236,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IVault>;
     getContractAt(
+      name: "LibAuction",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LibAuction>;
+    getContractAt(
       name: "Marketplace",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -233,11 +256,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.NodesStorage>;
     getContractAt(
-      name: "OrderValidator",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.OrderValidator>;
-    getContractAt(
       name: "SessionReceipt",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -248,10 +266,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.UsageDepositor>;
     getContractAt(
-      name: "UsageOrderValidator",
+      name: "Validator",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.UsageOrderValidator>;
+    ): Promise<Contracts.Validator>;
     getContractAt(
       name: "Voting",
       address: string | ethers.Addressable,
@@ -271,6 +289,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC5267>;
     deployContract(
+      name: "Pausable",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Pausable>;
+    deployContract(
       name: "IERC1155",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC1155>;
@@ -315,13 +337,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.AssetTransferAgent>;
     deployContract(
+      name: "AuctionVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.AuctionVault>;
+    deployContract(
       name: "IAssetTransferAgent",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IAssetTransferAgent>;
     deployContract(
-      name: "INodeAdmin",
+      name: "IAuctionVault",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.INodeAdmin>;
+    ): Promise<Contracts.IAuctionVault>;
     deployContract(
       name: "INodesStorage",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -335,6 +361,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVault>;
     deployContract(
+      name: "LibAuction",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LibAuction>;
+    deployContract(
       name: "Marketplace",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Marketplace>;
@@ -347,10 +377,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.NodesStorage>;
     deployContract(
-      name: "OrderValidator",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.OrderValidator>;
-    deployContract(
       name: "SessionReceipt",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.SessionReceipt>;
@@ -359,9 +385,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UsageDepositor>;
     deployContract(
-      name: "UsageOrderValidator",
+      name: "Validator",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UsageOrderValidator>;
+    ): Promise<Contracts.Validator>;
     deployContract(
       name: "Voting",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -383,6 +409,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC5267>;
     deployContract(
+      name: "Pausable",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Pausable>;
+    deployContract(
       name: "IERC1155",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -438,15 +469,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.AssetTransferAgent>;
     deployContract(
+      name: "AuctionVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.AuctionVault>;
+    deployContract(
       name: "IAssetTransferAgent",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IAssetTransferAgent>;
     deployContract(
-      name: "INodeAdmin",
+      name: "IAuctionVault",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.INodeAdmin>;
+    ): Promise<Contracts.IAuctionVault>;
     deployContract(
       name: "INodesStorage",
       args: any[],
@@ -463,6 +499,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVault>;
     deployContract(
+      name: "LibAuction",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LibAuction>;
+    deployContract(
       name: "Marketplace",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -478,11 +519,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.NodesStorage>;
     deployContract(
-      name: "OrderValidator",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.OrderValidator>;
-    deployContract(
       name: "SessionReceipt",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -493,10 +529,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UsageDepositor>;
     deployContract(
-      name: "UsageOrderValidator",
+      name: "Validator",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UsageOrderValidator>;
+    ): Promise<Contracts.Validator>;
     deployContract(
       name: "Voting",
       args: any[],

@@ -3,10 +3,12 @@
 /* eslint-disable */
 export * as admin from "./admin";
 export * as interfaces from "./interfaces";
+export * as libraries from "./libraries";
 export * as mock from "./mock";
 export * as nodesStorage from "./nodes storage";
 export * as payment from "./payment";
 export * as voting from "./voting";
 export { AssetTransferAgent__factory } from "./AssetTransferAgent__factory";
+export { AuctionVault__factory } from "./AuctionVault__factory";
 export { Marketplace__factory } from "./Marketplace__factory";
-export { OrderValidator__factory } from "./OrderValidator__factory";
+export { Validator__factory } from "./Validator__factory";

@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IAssetTransferAgent } from "./IAssetTransferAgent";
-export type { INodeAdmin } from "./INodeAdmin";
+export type { IAuctionVault } from "./IAuctionVault";
 export type { INodesStorage } from "./INodesStorage";
 export type { IUsageDepositor } from "./IUsageDepositor";
 export type { IVault } from "./IVault";

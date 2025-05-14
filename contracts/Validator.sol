@@ -66,18 +66,19 @@ abstract contract Validator is EIP712 {
         LibOrder.Order calldata takerOrder,
         uint256 index
     ) internal pure {
-        LibOrder.OrderItem calldata makerOrderItem = makerOrder.items[index];
-        LibOrder.OrderItem calldata takerOrderItem = takerOrder.items[0];
+        LibOrder.OrderItem calldata makerItem = makerOrder.items[index];
+        LibOrder.OrderItem calldata takerItem = takerOrder.items[0];
 
         require(makerOrder.maker == takerOrder.taker, "Taker must match maker");
-        //Validate if taker makeAsset is same as maker takeAsset
-        LibAsset.validateCompatibleAsset(
-            makerOrderItem.takeAsset,
-            takerOrderItem.makeAsset
+
+        // Match metadata, ignore amount (it’s calculated at runtime)
+        LibAsset.validateCompatibleAssetMetadata(
+            makerItem.takeAsset,
+            takerItem.makeAsset
         );
-        LibAsset.validateCompatibleAsset(
-            makerOrderItem.makeAsset,
-            takerOrderItem.takeAsset
+        LibAsset.validateCompatibleAssetMetadata(
+            makerItem.makeAsset,
+            takerItem.takeAsset
         );
     }
 
@@ -136,7 +137,7 @@ abstract contract Validator is EIP712 {
                 "contract collection bid signature verification error"
             );
         } else {
-            address signer = LibAuction.recoverSigner(
+            address signer = LibCollectionBid.recoverSigner(
                 collectionBidHash,
                 signature
             );

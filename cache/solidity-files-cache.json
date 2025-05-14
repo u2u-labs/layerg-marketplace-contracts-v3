@@ -534,47 +534,6 @@
       ],
       "artifacts": []
     },
-    "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/contracts/payment/UsageOrderValidator.sol": {
-      "lastModificationDate": 1745566209921,
-      "contentHash": "6322b8f78afeff9f78231b775064d221",
-      "sourceName": "contracts/payment/UsageOrderValidator.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
-        "@openzeppelin/contracts/utils/cryptography/EIP712.sol",
-        "./libraries/Types.sol",
-        "./libraries/LibUsageOrder.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "UsageOrderValidator"
-      ]
-    },
     "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/node_modules/.pnpm/@openzeppelin+contracts@4.9.6/node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol": {
       "lastModificationDate": 1745064240772,
       "contentHash": "1535f8c0c68463f8c1b5239f7584e71f",
@@ -609,44 +568,6 @@
       ],
       "artifacts": [
         "ReentrancyGuard"
-      ]
-    },
-    "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/contracts/payment/libraries/LibPayment.sol": {
-      "lastModificationDate": 1745380147677,
-      "contentHash": "3a5a06042c852b32a10455c675909d3b",
-      "sourceName": "contracts/payment/libraries/LibPayment.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./Types.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "LibPayment"
       ]
     },
     "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/node_modules/.pnpm/@openzeppelin+contracts@4.9.6/node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
@@ -1028,45 +949,6 @@
         "IUsageDepositor"
       ]
     },
-    "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/contracts/payment/libraries/LibSession.sol": {
-      "lastModificationDate": 1745379713896,
-      "contentHash": "3e39cec9e021d69d30ea6f840164d13e",
-      "sourceName": "contracts/payment/libraries/LibSession.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./Types.sol",
-        "./LibPayment.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "LibSession"
-      ]
-    },
     "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/contracts/voting/Voting.sol": {
       "lastModificationDate": 1745288399150,
       "contentHash": "d5b5f1ae1ccdcab4216c27c9e0f3dc1f",
@@ -1105,42 +987,6 @@
       ],
       "artifacts": [
         "Voting"
-      ]
-    },
-    "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/contracts/interfaces/INodeAdmin.sol": {
-      "lastModificationDate": 1745236727648,
-      "contentHash": "606e676a324f54f3b8117ba4e77c8a12",
-      "sourceName": "contracts/interfaces/INodeAdmin.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "INodeAdmin"
       ]
     },
     "/Users/levu/Desktop/projects/Node P2P/node-p2p-contracts/contracts/nodes storage/NodesStorage.sol": {
@@ -1293,7 +1139,7 @@
         "BokkyPooBahsDateTimeLibrary"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/AssetTransferAgent.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/AssetTransferAgent.sol": {
       "lastModificationDate": 1746159218281,
       "contentHash": "81ddd4071d8aa1adfb778f13786874c7",
       "sourceName": "contracts/AssetTransferAgent.sol",
@@ -1337,7 +1183,7 @@
         "AssetTransferAgent"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/interfaces/IAssetTransferAgent.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/interfaces/IAssetTransferAgent.sol": {
       "lastModificationDate": 1746021014297,
       "contentHash": "d27925f90d54cdc1ca8018c7556c491a",
       "sourceName": "contracts/interfaces/IAssetTransferAgent.sol",
@@ -1374,7 +1220,7 @@
         "IAssetTransferAgent"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
       "lastModificationDate": 1745992753516,
       "contentHash": "5a20b2cad87ddb61c7a3a6af21289e28",
       "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
@@ -1413,83 +1259,7 @@
         "Ownable"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-      "lastModificationDate": 1745992753487,
-      "contentHash": "df36f7051335cd1e748b1b6463b7fdd3",
-      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC20"
-      ]
-    },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/token/ERC1155/IERC1155.sol": {
-      "lastModificationDate": 1745992753466,
-      "contentHash": "93aa9af4f5d2d2095a71ccde917038bb",
-      "sourceName": "@openzeppelin/contracts/token/ERC1155/IERC1155.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "../../utils/introspection/IERC165.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC1155"
-      ]
-    },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
       "lastModificationDate": 1745992753501,
       "contentHash": "48de4c9a3a4ae5ef66a2aa620843413f",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
@@ -1528,7 +1298,83 @@
         "IERC721"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1745992753487,
+      "contentHash": "df36f7051335cd1e748b1b6463b7fdd3",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/token/ERC1155/IERC1155.sol": {
+      "lastModificationDate": 1745992753466,
+      "contentHash": "93aa9af4f5d2d2095a71ccde917038bb",
+      "sourceName": "@openzeppelin/contracts/token/ERC1155/IERC1155.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../../utils/introspection/IERC165.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC1155"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
       "lastModificationDate": 1745992753538,
       "contentHash": "1b5d667d3740d866eca0352758e59827",
       "sourceName": "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
@@ -1569,7 +1415,7 @@
         "SafeERC20"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/Context.sol": {
       "lastModificationDate": 1745992753311,
       "contentHash": "f07feb4a44b1a4872370da5aa70e8e46",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
@@ -1606,7 +1452,7 @@
         "Context"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
       "lastModificationDate": 1745992753475,
       "contentHash": "03e6768535ac4da0e9756f1d8a4a018a",
       "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
@@ -1643,44 +1489,7 @@
         "IERC165"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/Address.sol": {
-      "lastModificationDate": 1745992753301,
-      "contentHash": "211ffd288c1588ba8c10eae668ca3c66",
-      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.1"
-      ],
-      "artifacts": [
-        "Address"
-      ]
-    },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol": {
       "lastModificationDate": 1745992753490,
       "contentHash": "525fcdad8d171312933f47baf01d1ed8",
       "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
@@ -1717,9 +1526,46 @@
         "IERC20Permit"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/Marketplace.sol": {
-      "lastModificationDate": 1746415989409,
-      "contentHash": "3c58fd8101af2033d654dba8cbb5f5d3",
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1745992753301,
+      "contentHash": "211ffd288c1588ba8c10eae668ca3c66",
+      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.1"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/Marketplace.sol": {
+      "lastModificationDate": 1747210509030,
+      "contentHash": "34d6835a183a938afbb597941ca80df2",
       "sourceName": "contracts/Marketplace.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1748,11 +1594,20 @@
       },
       "imports": [
         "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "@openzeppelin/contracts/utils/introspection/IERC165.sol",
+        "@openzeppelin/contracts/token/ERC1155/IERC1155.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
+        "@openzeppelin/contracts/security/Pausable.sol",
         "./libraries/LibOrder.sol",
         "./libraries/LibAsset.sol",
+        "./libraries/LibAuction.sol",
+        "./libraries/LibCollectionBid.sol",
         "./interfaces/IAssetTransferAgent.sol",
-        "./OrderValidator.sol"
+        "./Validator.sol",
+        "./interfaces/IAuctionVault.sol"
       ],
       "versionPragmas": [
         "^0.8.20"
@@ -1761,9 +1616,9 @@
         "Marketplace"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/libraries/LibOrder.sol": {
-      "lastModificationDate": 1746415553553,
-      "contentHash": "a4961d8c3cb35ff683e6bfb00ed3d77b",
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/libraries/LibOrder.sol": {
+      "lastModificationDate": 1747207462159,
+      "contentHash": "98991ecdedc1f2d47727a06dad02b139",
       "sourceName": "contracts/libraries/LibOrder.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1801,9 +1656,89 @@
         "LibOrder"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/libraries/LibAsset.sol": {
-      "lastModificationDate": 1746060778191,
-      "contentHash": "7e648ec563fcb3224bc1c3343e4c9fa1",
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/libraries/LibAuction.sol": {
+      "lastModificationDate": 1746945064086,
+      "contentHash": "eb867e525ce14bd985232cf9ddcf0493",
+      "sourceName": "contracts/libraries/LibAuction.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
+        "./LibAsset.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "LibAuction"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/libraries/LibCollectionBid.sol": {
+      "lastModificationDate": 1746682817814,
+      "contentHash": "19cb4bc0d1c595f9ac3a27195ebf7dac",
+      "sourceName": "contracts/libraries/LibCollectionBid.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
+        "./LibAsset.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "LibCollectionBid"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/libraries/LibAsset.sol": {
+      "lastModificationDate": 1747209082583,
+      "contentHash": "4e8141b99bd240dd3203edd7dbade222",
       "sourceName": "contracts/libraries/LibAsset.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -1838,10 +1773,10 @@
         "LibAsset"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/OrderValidator.sol": {
-      "lastModificationDate": 1746178894350,
-      "contentHash": "ca185221e034797b9e736642c3b4fa8e",
-      "sourceName": "contracts/OrderValidator.sol",
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/Validator.sol": {
+      "lastModificationDate": 1747210149184,
+      "contentHash": "cb39667cf117c52e8db662d7f2e02fb1",
+      "sourceName": "contracts/Validator.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
@@ -1873,16 +1808,55 @@
         "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
         "./libraries/LibOrder.sol",
         "./libraries/LibAsset.sol",
+        "./libraries/LibAuction.sol",
+        "./libraries/LibCollectionBid.sol",
         "./libraries/MerkleProof.sol"
       ],
       "versionPragmas": [
         "^0.8.20"
       ],
       "artifacts": [
-        "OrderValidator"
+        "Validator"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/interfaces/IAuctionVault.sol": {
+      "lastModificationDate": 1746644068773,
+      "contentHash": "e8087c4c54e23e5f6c8c6f5f8d9eb606",
+      "sourceName": "contracts/interfaces/IAuctionVault.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IAuctionVault"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol": {
       "lastModificationDate": 1745992753529,
       "contentHash": "1535f8c0c68463f8c1b5239f7584e71f",
       "sourceName": "@openzeppelin/contracts/security/ReentrancyGuard.sol",
@@ -1919,7 +1893,46 @@
         "ReentrancyGuard"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/security/Pausable.sol": {
+      "lastModificationDate": 1745992753518,
+      "contentHash": "25c8108f36fdd472bc78d4c4af240c11",
+      "sourceName": "@openzeppelin/contracts/security/Pausable.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Pausable"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
       "lastModificationDate": 1745992753318,
       "contentHash": "d822a8a9468649cab463f29f5decf5cc",
       "sourceName": "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
@@ -1958,7 +1971,7 @@
         "ECDSA"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
       "lastModificationDate": 1745992753549,
       "contentHash": "48686fc32a22a3754b8e63321857dd2a",
       "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
@@ -1998,7 +2011,7 @@
         "Strings"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/math/Math.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/math/Math.sol": {
       "lastModificationDate": 1745992753515,
       "contentHash": "fe63409d8a06818b926cf89e0ea88b1b",
       "sourceName": "@openzeppelin/contracts/utils/math/Math.sol",
@@ -2035,7 +2048,7 @@
         "Math"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/math/SignedMath.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/math/SignedMath.sol": {
       "lastModificationDate": 1745992753540,
       "contentHash": "9488ebd4daacfee8ad04811600d7d061",
       "sourceName": "@openzeppelin/contracts/utils/math/SignedMath.sol",
@@ -2072,7 +2085,46 @@
         "SignedMath"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/interfaces/IERC1271.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/libraries/MerkleProof.sol": {
+      "lastModificationDate": 1746159161734,
+      "contentHash": "3871f0e163131d33434aa757d2bf18a2",
+      "sourceName": "contracts/libraries/MerkleProof.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Hashes.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "MerkleProof"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/interfaces/IERC1271.sol": {
       "lastModificationDate": 1745992753466,
       "contentHash": "8fe867b95c856b204f954a1910e28a1e",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC1271.sol",
@@ -2109,7 +2161,7 @@
         "IERC1271"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/cryptography/EIP712.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/cryptography/EIP712.sol": {
       "lastModificationDate": 1745992753323,
       "contentHash": "459aeb9cc3fc3c6d67d30ffefb724aba",
       "sourceName": "@openzeppelin/contracts/utils/cryptography/EIP712.sol",
@@ -2150,7 +2202,44 @@
         "EIP712"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/ShortStrings.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/libraries/Hashes.sol": {
+      "lastModificationDate": 1746159135425,
+      "contentHash": "677143142c76ea165090fd7abfce1603",
+      "sourceName": "contracts/libraries/Hashes.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Hashes"
+      ]
+    },
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/ShortStrings.sol": {
       "lastModificationDate": 1745992753540,
       "contentHash": "8dde288da49722a70f34ee369be4bfba",
       "sourceName": "@openzeppelin/contracts/utils/ShortStrings.sol",
@@ -2189,7 +2278,7 @@
         "ShortStrings"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/interfaces/IERC5267.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/interfaces/IERC5267.sol": {
       "lastModificationDate": 1745992753499,
       "contentHash": "b1756048024350a162c3be27c04aa652",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC5267.sol",
@@ -2226,7 +2315,7 @@
         "IERC5267"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/node_modules/@openzeppelin/contracts/utils/StorageSlot.sol": {
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/node_modules/@openzeppelin/contracts/utils/StorageSlot.sol": {
       "lastModificationDate": 1745992753541,
       "contentHash": "682f7dd1f2e1147c8390e7575deceb2d",
       "sourceName": "@openzeppelin/contracts/utils/StorageSlot.sol",
@@ -2263,10 +2352,10 @@
         "StorageSlot"
       ]
     },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/libraries/MerkleProof.sol": {
-      "lastModificationDate": 1746159161734,
-      "contentHash": "3871f0e163131d33434aa757d2bf18a2",
-      "sourceName": "contracts/libraries/MerkleProof.sol",
+    "/Users/levu/Desktop/projects/layerg-marketplace-contracts-v3/contracts/AuctionVault.sol": {
+      "lastModificationDate": 1747207410071,
+      "contentHash": "964146c6222617070ba07364912b9692",
+      "sourceName": "contracts/AuctionVault.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
@@ -2293,50 +2382,18 @@
         }
       },
       "imports": [
-        "./Hashes.sol"
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/security/Pausable.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "./interfaces/IAuctionVault.sol"
       ],
       "versionPragmas": [
         "^0.8.20"
       ],
       "artifacts": [
-        "MerkleProof"
-      ]
-    },
-    "/Users/levu/Desktop/projects/marketplace-v3/contracts/libraries/Hashes.sol": {
-      "lastModificationDate": 1746159135425,
-      "contentHash": "677143142c76ea165090fd7abfce1603",
-      "sourceName": "contracts/libraries/Hashes.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "Hashes"
+        "AuctionVault"
       ]
     }
   }
