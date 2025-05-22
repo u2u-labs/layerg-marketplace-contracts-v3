@@ -21,7 +21,7 @@ library LibAsset {
         uint256 assetAmount;
     }
 
-    function hash(Asset memory asset) internal pure returns (bytes32) {
+    function hash(Asset calldata asset) internal pure returns (bytes32) {
         return
             keccak256(
                 abi.encode(

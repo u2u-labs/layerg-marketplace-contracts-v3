@@ -62,19 +62,21 @@ library LibOrder {
     }
 
     function hash(Order calldata order) internal pure returns (bytes32) {
-        bytes32[] memory itemHashes = new bytes32[](order.items.length);
-        for (uint256 i = 0; i < order.items.length; i++) {
+        uint256 len = order.items.length;
+        bytes32[] memory itemHashes = new bytes32[](len);
+        for (uint256 i = 0; i < len; ) {
             itemHashes[i] = hashOrderItem(order.items[i]);
+            unchecked {
+                ++i;
+            }
         }
-
-        bytes32 itemsHash = keccak256(abi.encodePacked(itemHashes));
 
         return
             keccak256(
                 abi.encode(
                     ORDER_TYPEHASH,
                     order.orderType,
-                    itemsHash,
+                    keccak256(abi.encode(itemHashes)),
                     order.maker,
                     order.taker,
                     order.root,

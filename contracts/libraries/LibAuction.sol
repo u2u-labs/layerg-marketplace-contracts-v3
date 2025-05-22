@@ -27,7 +27,7 @@ library LibAuction {
         uint256 timestamp;
     }
 
-    function hash(Auction memory auction) public pure returns (bytes32) {
+    function hash(Auction calldata auction) public pure returns (bytes32) {
         return
             keccak256(
                 abi.encode(
